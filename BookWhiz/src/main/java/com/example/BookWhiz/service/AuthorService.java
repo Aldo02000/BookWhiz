@@ -1,0 +1,40 @@
+package com.example.BookWhiz.service;
+
+import com.example.BookWhiz.model.Author;
+import com.example.BookWhiz.repository.AuthorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class AuthorService {
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    public void saveAuthor(Author author) {
+        // Check if the author already exists in the database by name
+        Optional<Author> existingAuthor = authorRepository.findByName(author.getName());
+
+        // Save only if the author does not already exist
+        if (existingAuthor.isEmpty()) {
+            authorRepository.save(author);
+        }
+    }
+
+    public Set<Author> getAuthorsByPartOfName(String partOfName) {
+        Set<Author> existingAuthors = authorRepository.findByNameContainingIgnoreCase(partOfName);
+        return existingAuthors;
+    }
+
+    public boolean existsAuthor(String name) {
+        Optional<Author> existingAuthor = authorRepository.findByName(name);
+        return existingAuthor.isPresent();
+    }
+
+    public Author getAuthor(String name) {
+        Optional<Author> existingAuthor = authorRepository.findByName(name);
+        return existingAuthor.orElse(null);
+    }
+}
