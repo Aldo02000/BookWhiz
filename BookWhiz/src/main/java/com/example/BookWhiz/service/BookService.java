@@ -17,10 +17,9 @@ public class BookService {
     private BookRepository bookRepository;
 
     public void saveBook(Book book) {
-        // Check if the author already exists in the database by name
         Optional<Book> existingBook = bookRepository.findByIsbn13(book.getIsbn13());
 
-        // Save only if the author does not already exist
+        // Save only if the book does not already exist
         if (existingBook.isEmpty()) {
             bookRepository.save(book);
         }

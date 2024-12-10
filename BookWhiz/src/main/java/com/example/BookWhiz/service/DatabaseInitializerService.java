@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,6 +116,11 @@ public class DatabaseInitializerService {
             }
         }
 
+        HashMap<String, String> images = volumeInfo.containsKey("imageLinks") ? (HashMap<String, String>) volumeInfo.get("imageLinks"): null;
+        if (images != null) {
+            String imageLink = images.containsKey("thumbnail") ? images.get("thumbnail") : null;
+            book.setImageLink(imageLink);
+        }
 
         book.setTitle(volumeInfo.get("title").toString());
         book.setPublishingDate(volumeInfo.containsKey("publishedDate") ? volumeInfo.get("publishedDate").toString() : null);

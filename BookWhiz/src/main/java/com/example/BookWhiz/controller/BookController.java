@@ -1,5 +1,6 @@
 package com.example.BookWhiz.controller;
 
+import com.example.BookWhiz.dto.BookDto;
 import com.example.BookWhiz.model.Author;
 import com.example.BookWhiz.model.Book;
 import com.example.BookWhiz.model.Genre;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,13 +63,20 @@ public class BookController {
     }
 
     @GetMapping("/search/genre")
-    public ResponseEntity<Set<String>> searchBooksByGenre(@RequestParam String genre) {
+    public ResponseEntity<List<BookDto>> searchBooksByGenre(@RequestParam String genre) {
         Genre genreFound = genreService.getGenre(genre);
         Set<Book> books = bookService.getBooksByGenre(genreFound);
 
-        Set<String> titles = books.stream()
-                .map(Book::getTitle)
-                .collect(Collectors.toSet());
-        return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(titles);
+        List<BookDto> bookDTOs = books.stream()
+                .map(book -> new BookDto(
+                        book.getTitle(),
+                        book.getImageLink(),
+                        book.getAuthors().stream()
+                                .map(Author::getName) // Assuming `getName` returns the author's name
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
+
+        return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bookDTOs);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserAuthorListRepository extends JpaRepository<UserAuthorList, Long> {
-    Optional<UserAuthorList> findByUserId(Long userId);
+public interface UserBookListRepository extends JpaRepository<UserBookList, Long> {
+    Optional<UserBookList> findById(Long id);
+    Optional<UserBookList> findByUserIdAndTypeOfList(Long userId, BookListType typeOfList);
 }

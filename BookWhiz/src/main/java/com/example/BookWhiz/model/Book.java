@@ -17,7 +17,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -54,6 +54,8 @@ public class Book {
     private String language;
 
     private String pageCount;
+
+    private String imageLink;
 
     @Lob
     @Column(columnDefinition = "TEXT")

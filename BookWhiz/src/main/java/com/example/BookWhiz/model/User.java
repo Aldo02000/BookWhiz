@@ -61,8 +61,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy="user")
     private Set<Review> reviews = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private UserBookList userBookList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserBookList> userBookList;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserAuthorList userAuthorList;
