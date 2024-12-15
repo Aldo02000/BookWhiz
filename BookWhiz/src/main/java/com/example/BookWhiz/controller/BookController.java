@@ -2,6 +2,7 @@ package com.example.BookWhiz.controller;
 
 import com.example.BookWhiz.dto.AuthorDto;
 import com.example.BookWhiz.dto.BookDto;
+import com.example.BookWhiz.dto.GenreDto;
 import com.example.BookWhiz.model.Author;
 import com.example.BookWhiz.model.Book;
 import com.example.BookWhiz.model.Genre;
@@ -77,14 +78,18 @@ public class BookController {
                                 )) // Assuming `getName` returns the author's name
                                 .collect(Collectors.toSet()),
                         book.getGenres().stream()
-                                .map(Genre::getName)
+                                .map(genreDto -> new GenreDto(
+                                        genreDto.getId(),
+                                        genreDto.getName()
+                                ))
                                 .collect(Collectors.toSet()),
                         book.getIsbn10(),
                         book.getIsbn13(),
                         book.getPublishingDate(),
                         book.getPublishingHouse(),
                         book.getLanguage(),
-                        book.getPageCount()
+                        book.getPageCount(),
+                        book.getSummary()
                 ))
                 .collect(Collectors.toList());
 
@@ -108,14 +113,18 @@ public class BookController {
                                 )) // Assuming `getName` returns the author's name
                                 .collect(Collectors.toSet()),
                         book.getGenres().stream()
-                                .map(Genre::getName)
+                                .map(genreDto -> new GenreDto(
+                                        genreDto.getId(),
+                                        genreDto.getName()
+                                ))
                                 .collect(Collectors.toSet()),
                         book.getIsbn10(),
                         book.getIsbn13(),
                         book.getPublishingDate(),
                         book.getPublishingHouse(),
                         book.getLanguage(),
-                        book.getPageCount()
+                        book.getPageCount(),
+                        book.getSummary()
                 ))
                 .collect(Collectors.toList());
 
@@ -133,10 +142,13 @@ public class BookController {
                         ))
                         .collect(Collectors.toSet()),
                 book.getGenres().stream()
-                        .map(Genre::getName)
+                        .map(genreDto -> new GenreDto(
+                                genreDto.getId(),
+                                genreDto.getName()
+                        ))
                         .collect(Collectors.toSet()),
                 book.getIsbn10(), book.getIsbn13(), book.getPublishingDate(),
-                book.getPublishingHouse(), book.getLanguage(), book.getPageCount());
+                book.getPublishingHouse(), book.getLanguage(), book.getPageCount(), book.getSummary());
 
         return ResponseEntity.ok(bookDTO);
 

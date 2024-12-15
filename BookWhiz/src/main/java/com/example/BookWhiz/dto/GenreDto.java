@@ -17,4 +17,11 @@ public class GenreDto {
         this.name = name;
         this.books = books;
     }
+
+    public GenreDto(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+
 }
