@@ -134,7 +134,7 @@ public class DatabaseInitializerService {
         if (authors != null) {
             for (Object authorobj : authors) {
                 if (authorService.existsAuthor(authorobj.toString())) {
-                    book.getAuthors().add(authorService.getAuthor(authorobj.toString()));
+                    book.getAuthors().add(authorService.getAuthorbyName(authorobj.toString()));
                 } else {
                     Author author = new Author();
                     author.setName(authorobj.toString());

@@ -11,7 +11,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserBookListService {
@@ -24,6 +26,8 @@ public class UserBookListService {
 
     @Autowired// Assuming this exists
     private final BookRepository bookRepository; // Assuming this exists
+    @Autowired
+    private UserService userService;
 
     public UserBookListService(UserBookListRepository userBookListRepository, UserRepository userRepository, BookRepository bookRepository) {
         this.userBookListRepository = userBookListRepository;
@@ -87,5 +91,12 @@ public class UserBookListService {
         userBookList.getBooks().remove(book);
 
         userBookListRepository.save(userBookList);
+    }
+
+    public Set<Book> getBooksByUserIdAndListType(Long userId, BookListType listType) {
+
+        User user1 = userService.getUserById(userId);
+        Set<Book> books = userBookListRepository.findBooksByUserAndTypeOfList(user1, listType);
+        return books;
     }
 }

@@ -46,4 +46,11 @@ public class BookService {
         Optional<Book> existingBook = bookRepository.findByIsbn13(isbn13);
         return existingBook.orElse(null);
     }
+
+    public Book getBookById(Long id) {
+        Optional<Book> existingBook = bookRepository.findById(id);
+        return existingBook.orElse(null);
+    }
+
+
 }

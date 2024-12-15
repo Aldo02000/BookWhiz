@@ -1,5 +1,6 @@
 package com.example.BookWhiz.controller;
 
+import com.example.BookWhiz.dto.AuthorDto;
 import com.example.BookWhiz.dto.BookDto;
 import com.example.BookWhiz.model.Author;
 import com.example.BookWhiz.model.Book;
@@ -9,10 +10,7 @@ import com.example.BookWhiz.service.BookService;
 import com.example.BookWhiz.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +46,7 @@ public class BookController {
     }
 
     @GetMapping("/search/author")
-    public ResponseEntity<Set<String>> searchBooksByAuthor(@RequestParam String author) {
+    public ResponseEntity<Set<String>> searchBooksByAuthorName(@RequestParam String author) {
 
         Set<Author> authors = authorService.getAuthorsByPartOfName(author);
         Set<Book> books = new HashSet<>();
@@ -62,21 +60,85 @@ public class BookController {
         return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(titles);
     }
 
-    @GetMapping("/search/genre")
-    public ResponseEntity<List<BookDto>> searchBooksByGenre(@RequestParam String genre) {
+    @GetMapping("/search/genre/{genre}")
+    public ResponseEntity<List<BookDto>> searchBooksByGenre(@PathVariable String genre) {
         Genre genreFound = genreService.getGenre(genre);
         Set<Book> books = bookService.getBooksByGenre(genreFound);
 
         List<BookDto> bookDTOs = books.stream()
                 .map(book -> new BookDto(
+                        book.getId(),
                         book.getTitle(),
                         book.getImageLink(),
                         book.getAuthors().stream()
-                                .map(Author::getName) // Assuming `getName` returns the author's name
-                                .collect(Collectors.toList())
+                                .map(author -> new AuthorDto(
+                                        author.getId(),
+                                        author.getName()
+                                )) // Assuming `getName` returns the author's name
+                                .collect(Collectors.toSet()),
+                        book.getGenres().stream()
+                                .map(Genre::getName)
+                                .collect(Collectors.toSet()),
+                        book.getIsbn10(),
+                        book.getIsbn13(),
+                        book.getPublishingDate(),
+                        book.getPublishingHouse(),
+                        book.getLanguage(),
+                        book.getPageCount()
                 ))
                 .collect(Collectors.toList());
 
-        return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bookDTOs);
+        return bookDTOs.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bookDTOs);
+    }
+
+    @GetMapping("/search/author/{authorId}")
+    public ResponseEntity<List<BookDto>> searchBooksByAuthorId(@PathVariable Integer authorId) {
+        Author authorFound = authorService.getAuthorById(authorId);
+        Set<Book> books = bookService.getBooksByAuthor(authorFound);
+
+        List<BookDto> bookDTOs = books.stream()
+                .map(book -> new BookDto(
+                        book.getId(),
+                        book.getTitle(),
+                        book.getImageLink(),
+                        book.getAuthors().stream()
+                                .map(author -> new AuthorDto(
+                                        author.getId(),
+                                        author.getName()
+                                )) // Assuming `getName` returns the author's name
+                                .collect(Collectors.toSet()),
+                        book.getGenres().stream()
+                                .map(Genre::getName)
+                                .collect(Collectors.toSet()),
+                        book.getIsbn10(),
+                        book.getIsbn13(),
+                        book.getPublishingDate(),
+                        book.getPublishingHouse(),
+                        book.getLanguage(),
+                        book.getPageCount()
+                ))
+                .collect(Collectors.toList());
+
+        return bookDTOs.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bookDTOs);
+    }
+
+    @GetMapping("/book/{bookId}")
+    public ResponseEntity<BookDto> getBookById(@PathVariable Long bookId) {
+        Book book = bookService.getBookById(bookId);
+        BookDto bookDTO = new BookDto(book.getId(), book.getTitle(), book.getImageLink(),
+                book.getAuthors().stream()
+                        .map(author -> new AuthorDto(
+                                author.getId(),
+                                author.getName()
+                        ))
+                        .collect(Collectors.toSet()),
+                book.getGenres().stream()
+                        .map(Genre::getName)
+                        .collect(Collectors.toSet()),
+                book.getIsbn10(), book.getIsbn13(), book.getPublishingDate(),
+                book.getPublishingHouse(), book.getLanguage(), book.getPageCount());
+
+        return ResponseEntity.ok(bookDTO);
+
     }
 }

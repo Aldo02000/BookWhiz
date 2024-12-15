@@ -1,5 +1,6 @@
 package com.example.BookWhiz.service;
 
+import com.example.BookWhiz.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,19 +37,19 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> claims, User userDetails) {
         return buildToken(claims, userDetails, expirationTime);
     }
 
-    private String buildToken(Map<String, Object> claims, UserDetails userDetails, long expiration) {
+    private String buildToken(Map<String, Object> claims, User userDetails, long expiration) {
         try {
             return Jwts
                     .builder()
-                    .setClaims(claims)
+                    .claim("userId", userDetails.getId())
                     .setSubject(userDetails.getUsername())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis() + expiration))

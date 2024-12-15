@@ -33,8 +33,17 @@ public class AuthorService {
         return existingAuthor.isPresent();
     }
 
-    public Author getAuthor(String name) {
+    public Author getAuthorbyName(String name) {
         Optional<Author> existingAuthor = authorRepository.findByName(name);
         return existingAuthor.orElse(null);
+    }
+
+    public Author getAuthorById(Integer id) {
+        Optional<Author> author = authorRepository.findById(id);
+        return author.orElse(null);
+    }
+
+    public List<Author> getAllAuthors() {
+        return authorRepository.findAll();
     }
 }

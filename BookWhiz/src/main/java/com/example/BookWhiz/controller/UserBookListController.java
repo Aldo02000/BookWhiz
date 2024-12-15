@@ -1,10 +1,16 @@
 package com.example.BookWhiz.controller;
 
-import com.example.BookWhiz.model.BookListType;
+import com.example.BookWhiz.dto.AuthorDto;
+import com.example.BookWhiz.dto.BookDto;
+import com.example.BookWhiz.model.*;
 import com.example.BookWhiz.service.UserBookListService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -38,6 +44,38 @@ public class UserBookListController {
         } catch (EntityNotFoundException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/{userId}/bookList/{listType}/books")
+    public ResponseEntity<Set<BookDto>> getBookList(@PathVariable Long userId,
+                                                  @PathVariable BookListType listType) {
+
+        Set<Book> books = userBookListService.getBooksByUserIdAndListType(userId, listType);
+
+        Set<BookDto> bookDTOs = books.stream()
+                .map(book -> new BookDto(
+                        book.getId(),
+                        book.getTitle(),
+                        book.getImageLink(),
+                        book.getAuthors().stream()
+                                .map(author -> new AuthorDto(
+                                        author.getId(),
+                                        author.getName()
+                                )) // Assuming `getName` returns the author's name
+                                .collect(Collectors.toSet()),
+                        book.getGenres().stream()
+                                .map(Genre::getName)
+                                .collect(Collectors.toSet()),
+                        book.getIsbn10(),
+                        book.getIsbn13(),
+                        book.getPublishingDate(),
+                        book.getPublishingHouse(),
+                        book.getLanguage(),
+                        book.getPageCount()
+                ))
+                .collect(Collectors.toSet());
+
+        return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bookDTOs);
     }
 }
 

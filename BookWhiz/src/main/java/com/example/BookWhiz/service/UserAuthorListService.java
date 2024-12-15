@@ -8,6 +8,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class UserAuthorListService {
 
@@ -19,6 +22,10 @@ public class UserAuthorListService {
 
     @Autowired
     private final AuthorRepository authorRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AuthorService authorService;
 
     public UserAuthorListService(UserAuthorListRepository userAuthorListRepository, UserRepository userRepository, AuthorRepository authorRepository) {
         this.userAuthorListRepository = userAuthorListRepository;
@@ -63,4 +70,17 @@ public class UserAuthorListService {
         userAuthorList.getAuthors().remove(author);
         userAuthorListRepository.save(userAuthorList);
     }
+
+    public Set<Author> getAuthorsByUserId(Long userId) {
+        User user = userService.getUserById(userId);
+        Set<Author> authors = userAuthorListRepository.findAuthorsByUser(user);
+        return authors;
+    }
+
+    public boolean existsAuthorById(Long userId, Integer authorId) {
+        User user = userService.getUserById(userId);
+        Author author = authorService.getAuthorById(authorId);
+        return userAuthorListRepository.existsByUserAndAuthors(user, Set.of(author));
+    }
+
 }

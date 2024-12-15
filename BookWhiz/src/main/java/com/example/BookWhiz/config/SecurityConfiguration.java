@@ -32,7 +32,10 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/books/search/**").permitAll()
+                        .requestMatchers("/books/**").permitAll()
+                        .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/authors/**").permitAll()
+                        .requestMatchers("/genres/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/user/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/user/**").permitAll()
                         .anyRequest().authenticated()

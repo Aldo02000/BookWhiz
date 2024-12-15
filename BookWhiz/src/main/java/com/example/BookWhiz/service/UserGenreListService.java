@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class UserGenreListService {
 
@@ -17,6 +19,10 @@ public class UserGenreListService {
 
     @Autowired
     private final GenreRepository genreRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private GenreService genreService;
 
     public UserGenreListService(UserGenreListRepository userGenreListRepository, UserRepository userRepository, GenreRepository genreRepository) {
         this.userGenreListRepository = userGenreListRepository;
@@ -60,5 +66,18 @@ public class UserGenreListService {
 
         userGenreList.getGenres().remove(genre);
         userGenreListRepository.save(userGenreList);
+    }
+
+    public Set<Genre> getGenresByUserId(Long userId) {
+        User user = userService.getUserById(userId);
+        Set<Genre> genres = userGenreListRepository.findGenresByUser(user);
+        return genres;
+    }
+
+    public boolean existsGenreById(Long userId, Integer genreId) {
+        User user = userService.getUserById(userId);
+        Genre genre = genreService.getGenreById(genreId);
+
+        return userGenreListRepository.existsByUserAndGenres(user, Set.of(genre));
     }
 }
