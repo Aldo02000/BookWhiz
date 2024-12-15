@@ -27,6 +27,9 @@ public class BookWhizApplication implements CommandLineRunner {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ReviewInitializer reviewInitializer;
+
 
     public static void main(String[] args) {
         SpringApplication.run(BookWhizApplication.class, args);
