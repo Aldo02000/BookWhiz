@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ReviewService {
@@ -41,6 +42,12 @@ public class ReviewService {
         Long reviewId = reviewRepository.findReviewIdByUserAndBook(user, book);
         Optional<Review> review = reviewRepository.findById(reviewId);
         return review.orElse(null);
+    }
+
+    public Set<Review> getReviewsByBookId(Long bookId) {
+        Book book = bookService.getBookById(bookId);
+        Optional<Set<Review>> reviews = reviewRepository.findReviewsByBook(book);
+        return reviews.orElse(null);
     }
 
     public void save(Review review) {

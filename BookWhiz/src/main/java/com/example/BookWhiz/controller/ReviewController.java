@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequestMapping("/reviews")
 @RestController
@@ -41,5 +43,22 @@ public class ReviewController {
 
         ReviewDto reviewDto = new ReviewDto(review.getId(), review.getContent(), formattedDate, review.getRating());
         return ResponseEntity.ok(reviewDto);
+    }
+
+    @GetMapping("/book/{bookId}")
+    public ResponseEntity<Set<ReviewDto>> getReviewsByBook(@PathVariable Long bookId) {
+        Set<Review> reviews = reviewService.getReviewsByBookId(bookId);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        Set<ReviewDto> reviewDtos = reviews.stream()
+                .map(review -> new ReviewDto(
+                        review.getId(),
+                        review.getContent(),
+                        formatter.format(review.getCreatedDate()),
+                        review.getRating()
+                ))
+                .collect(Collectors.toSet());
+
+        return reviewDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(reviewDtos);
     }
 }
