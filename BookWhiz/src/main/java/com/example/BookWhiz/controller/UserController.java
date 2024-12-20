@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -24,9 +23,18 @@ public class UserController {
     @GetMapping("/{userId}/details")
     public ResponseEntity<?> getUser(@PathVariable Long userId) {
         Optional<User> user = Optional.ofNullable(userService.getUserById(userId));
-
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+    @GetMapping("/{userId}/username")
+    public ResponseEntity<String> getUsername(@PathVariable Long userId) {
+        Optional<User> user = Optional.ofNullable(userService.getUserById(userId));
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get().getUsername());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }

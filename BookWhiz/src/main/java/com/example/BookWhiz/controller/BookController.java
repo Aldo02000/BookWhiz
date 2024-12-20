@@ -9,13 +9,12 @@ import com.example.BookWhiz.model.Genre;
 import com.example.BookWhiz.service.AuthorService;
 import com.example.BookWhiz.service.BookService;
 import com.example.BookWhiz.service.GenreService;
+import com.example.BookWhiz.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestMapping("/books")
@@ -30,6 +29,8 @@ public class BookController {
 
     @Autowired
     private final GenreService genreService;
+    @Autowired
+    private ReviewService reviewService;
 
     public BookController(BookService bookService, AuthorService authorService, GenreService genreService) {
         this.bookService = bookService;
@@ -151,6 +152,50 @@ public class BookController {
                 book.getPublishingHouse(), book.getLanguage(), book.getPageCount(), book.getSummary());
 
         return ResponseEntity.ok(bookDTO);
+    }
 
+    @GetMapping("/topRated")
+    public List<BookDto> getTopRatedBooks() {
+        List<Book> allBooks = bookService.getAllBooks();
+        Map<Book, Double> bookRatings = new HashMap<>();
+
+        for (Book book: allBooks) {
+            double bookRating = reviewService.getAverageRating(book.getId());
+            bookRatings.put(book, bookRating);
+        }
+
+        return bookRatings.entrySet().stream()
+                .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue())) // Descending order
+                .limit(10) // Take the top 10
+                .map(entry -> {
+                    Book book = entry.getKey();
+                    double rating = entry.getValue();
+                    return new BookDto(
+                            book.getId(),
+                            book.getTitle(),
+                            book.getImageLink(),
+                            book.getAuthors().stream()
+                                    .map(author -> new AuthorDto(
+                                            author.getId(),
+                                            author.getName()
+                                    ))
+                                    .collect(Collectors.toSet()),
+                            book.getGenres().stream()
+                                    .map(genre -> new GenreDto(
+                                            genre.getId(),
+                                            genre.getName()
+                                    ))
+                                    .collect(Collectors.toSet()),
+                            book.getIsbn10(),
+                            book.getIsbn13(),
+                            book.getPublishingDate(),
+                            book.getPublishingHouse(),
+                            book.getLanguage(),
+                            book.getPageCount(),
+                            book.getSummary(),
+                            rating // Include the rating as well
+                    );
+                }) // Map to DTO
+                .collect(Collectors.toList());
     }
 }

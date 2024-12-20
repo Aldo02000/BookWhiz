@@ -28,6 +28,8 @@ public class UserBookListService {
     private final BookRepository bookRepository; // Assuming this exists
     @Autowired
     private UserService userService;
+    @Autowired
+    private BookService bookService;
 
     public UserBookListService(UserBookListRepository userBookListRepository, UserRepository userRepository, BookRepository bookRepository) {
         this.userBookListRepository = userBookListRepository;
@@ -98,5 +100,12 @@ public class UserBookListService {
         User user1 = userService.getUserById(userId);
         Set<Book> books = userBookListRepository.findBooksByUserAndTypeOfList(user1, listType);
         return books;
+    }
+
+    public boolean existsBookInUserList(Long userId, Long bookId, BookListType listType) {
+        User user = userService.getUserById(userId);
+        Book book = bookService.getBookById(bookId);
+
+        return userBookListRepository.existsByBooksAndUserAndTypeOfList(Set.of(book), user, listType);
     }
 }

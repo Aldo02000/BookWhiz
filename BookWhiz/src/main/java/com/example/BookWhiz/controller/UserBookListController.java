@@ -82,5 +82,10 @@ public class UserBookListController {
 
         return books.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(bookDTOs);
     }
+
+    @GetMapping("/{userId}/bookList/{listType}/book/{bookId}")
+    public boolean isBookInTheList (@PathVariable Long userId,@PathVariable BookListType listType , @PathVariable Long bookId) {
+        return userBookListService.existsBookInUserList(userId, bookId, listType);
+    }
 }
 

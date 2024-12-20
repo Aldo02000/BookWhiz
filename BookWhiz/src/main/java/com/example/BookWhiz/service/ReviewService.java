@@ -50,6 +50,17 @@ public class ReviewService {
         return reviews.orElse(null);
     }
 
+    public double getAverageRating(Long bookId) {
+        Set<Review> reviews = getReviewsByBookId(bookId);
+        double averageRating = 0;
+        int totalRating = 0;
+        for (Review review : reviews) {
+            totalRating += review.getRating();
+            averageRating = (double) totalRating / reviews.size();
+        }
+        return averageRating;
+    }
+
     public void save(Review review) {
         reviewRepository.save(review);
     }
