@@ -26,6 +26,7 @@ class _SpecificBookScreenState extends State<SpecificBookScreen> {
   bool isLoading = true;
   bool _reviewExists = false;
   String? username;
+  bool isInSelectedLibrary = false;
   int _selectedRating = 0; // Holds the selected star rating
   final TextEditingController _reviewController = TextEditingController();
 
@@ -47,6 +48,28 @@ class _SpecificBookScreenState extends State<SpecificBookScreen> {
       return null;
     }
   }
+
+
+  Future<void> removeBookFromLibrary(String library) async {
+    final url = Uri.parse('http://10.0.2.2:8080/user/$userId/bookList/$library/book/${widget.bookId}');
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Book removed from $library!')),
+        );
+      } else {
+        throw Exception('Failed to remove book: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error removing book from library: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $error')),
+      );
+    }
+  }
+
 
 
   Future<bool> isBookInLibrary(String library) async {
@@ -233,6 +256,13 @@ class _SpecificBookScreenState extends State<SpecificBookScreen> {
     }
   }
 
+  void checkBookStatusInLibrary() async {
+    bool status = await isBookInLibrary(selectedLibrary);
+    setState(() {
+      isInSelectedLibrary = status;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -242,12 +272,14 @@ class _SpecificBookScreenState extends State<SpecificBookScreen> {
           userId = user.id;
         });
         fetchUsername();
+        checkBookStatusInLibrary();
       }
     });
     fetchBookAndReviews().then((_) {
       // Call _checkIfReviewExists only after book and reviews are fetched
       _checkIfReviewExists();
     });
+
     fetchAverageRating(widget.bookId).then((rating) {
       if (rating != null) {
         setState(() {
@@ -379,7 +411,7 @@ class _SpecificBookScreenState extends State<SpecificBookScreen> {
                           setState(() {
                             selectedLibrary = value; // Update the selected library
                           });
-                          print('Selected library: $selectedLibrary'); // Debug print
+                          checkBookStatusInLibrary(); // Debug print
                         }
                       },
                       items: ['FAVORITES', 'NEXT', 'READ']
@@ -390,8 +422,18 @@ class _SpecificBookScreenState extends State<SpecificBookScreen> {
                           .toList(),
                     ),
                     ElevatedButton(
-                      onPressed: addBook,
-                      child: Text('Add to $selectedLibrary'),
+                      onPressed: isInSelectedLibrary
+                          ? () async {
+                        await removeBookFromLibrary(selectedLibrary);
+                        checkBookStatusInLibrary(); // Refresh the status
+                      }
+                          : () async {
+                        await addBook();
+                        checkBookStatusInLibrary(); // Refresh the status
+                      },
+                      child: Text(
+                        isInSelectedLibrary ? 'Remove from $selectedLibrary' : 'Add to $selectedLibrary',
+                      ),
                     ),
                   ],
                 ),

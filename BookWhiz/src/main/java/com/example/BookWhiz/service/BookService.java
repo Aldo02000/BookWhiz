@@ -28,7 +28,7 @@ public class BookService {
     }
 
     public Set<Book> getBooksByTitle(String title) {
-        return bookRepository.findByTitleContainingIgnoreCase(title);
+        return (Set<Book>) bookRepository.findByTitleContainingIgnoreCase(title);
     }
 
     public boolean existsBook(String isbn13) {
@@ -56,5 +56,9 @@ public class BookService {
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
+    }
+
+    public List<Book> getBooksByTitleContaining(String title) {
+        return bookRepository.findByTitleContainingIgnoreCase(title);
     }
 }
