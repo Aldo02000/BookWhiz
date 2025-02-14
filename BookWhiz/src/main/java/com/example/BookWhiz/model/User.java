@@ -37,7 +37,7 @@ public class User implements UserDetails {
 
     @Getter
     @Setter
-    @Column(name = "birth_dates")
+    @Column(name = "birth_date")
     private Date dateOfBirth;
 
     @Getter

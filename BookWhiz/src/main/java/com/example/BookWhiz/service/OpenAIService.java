@@ -24,7 +24,7 @@ public class OpenAIService {
     private final RestTemplate restTemplate;
 
     @Autowired
-    private BookController bookController;
+    private BookService bookService;
 
     @Value("${openai.model}")
     private String model;
@@ -53,23 +53,23 @@ public class OpenAIService {
 
         // Set up function calling for book titles
         List<Map<String, Object>> functions = List.of(
-                Map.of(
-                        "name", "suggest_other_books",
-                        "description", "Suggest 5 other books.",
-                        "parameters", Map.of(
-                                "type", "object",
-                                "properties", Map.of(
-                                        "titles", Map.of(
-                                                "type", "array",
-                                                "items", Map.of("type", "string"),
-                                                "minItems", 5,
-                                                "maxItems", 5,
-                                                "description", "A list of 5 book titles similar to the input but not matching them."
-                                        )
-                                ),
-                                "required", List.of("titles")
+            Map.of(
+                "name", "suggest_other_books",
+                "description", "Suggest 5 other books.",
+                "parameters", Map.of(
+                    "type", "object",
+                    "properties", Map.of(
+                        "titles", Map.of(
+                                "type", "array",
+                                "items", Map.of("type", "string"),
+                                "minItems", 5,
+                                "maxItems", 5,
+                                "description", "A list of 5 book titles similar to the input but not matching them."
                         )
+                    ),
+                    "required", List.of("titles")
                 )
+            )
         );
         requestBody.put("functions", functions);
 
@@ -81,11 +81,25 @@ public class OpenAIService {
         // Send the request and get the response
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
 
+        List<String> titleList = getBooksFromResponse(response);
+
+        return returnListOfBookDTO(titleList);
+    }
+
+    private List<String> getBooksFromResponse(ResponseEntity<Map> response) {
         // Extract book titles from the response
         List<String> titleList = new ArrayList<>();
+
         if (response.getBody() != null) {
             List<Map> choices = (List<Map>) response.getBody().get("choices");
-            if (!choices.isEmpty()) {
+
+            // Check if 'choices' is null or empty
+            if (choices == null || choices.isEmpty()) {
+                // Return an empty list if 'choices' is null or empty
+                return titleList; // This ensures that no NPE occurs and the method can continue gracefully
+            }
+
+            else {
                 Map choice = choices.get(0);
                 Map message = (Map) choice.get("message");
                 Map functionCall = (Map) message.get("function_call");
@@ -110,8 +124,11 @@ public class OpenAIService {
                 }
             }
         }
+        return titleList;
+    }
 
-        List<Book> books = bookController.getBooks(titleList);
+    private ResponseEntity<List<BookDto>> returnListOfBookDTO(List<String> titleList) {
+        List<Book> books = bookService.getBooks(titleList);
 
         List<BookDto> bookDTOs = books.stream()
                 .map(book -> new BookDto(

@@ -5,18 +5,32 @@ import com.example.BookWhiz.model.Book;
 import com.example.BookWhiz.model.Genre;
 import com.example.BookWhiz.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class BookService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private AuthorService authorService;
+
+    @Autowired
+    private GenreService genreService;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${google.books.api.key}")
+    private String googleApiKey;
+
+    @Value("${google.books.api.url}")
+    private String baseUrl;
 
     public void saveBook(Book book) {
         Optional<Book> existingBook = bookRepository.findByIsbn13(book.getIsbn13());
@@ -60,5 +74,111 @@ public class BookService {
 
     public List<Book> getBooksByTitleContaining(String title) {
         return bookRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public boolean saveBookData(Map<String, Object> volumeInfo) {
+
+        Book book = new Book();
+
+        List<Map<String, Object>> identifiers = volumeInfo.containsKey("industryIdentifiers") ? (List<Map<String, Object>>) volumeInfo.get("industryIdentifiers") : null;
+
+        if (identifiers != null) {
+            for (Map<String, Object> identifier : identifiers) {
+                if ("ISBN_10".equals(identifier.get("type"))) {
+                    book.setIsbn10(identifier.get("identifier").toString());
+                } else if ("ISBN_13".equals(identifier.get("type"))) {
+                    String isbn13 = identifier.get("identifier").toString();
+                    if (existsBook(isbn13)) {
+                        return true;
+                    }
+                    book.setIsbn13(identifier.get("identifier").toString());
+                }
+            }
+        }
+
+        HashMap<String, String> images = volumeInfo.containsKey("imageLinks") ? (HashMap<String, String>) volumeInfo.get("imageLinks"): null;
+        if (images != null) {
+            String imageLink = images.containsKey("thumbnail") ? images.get("thumbnail") : null;
+            book.setImageLink(imageLink);
+        }
+
+        book.setTitle(volumeInfo.get("title").toString());
+        book.setPublishingDate(volumeInfo.containsKey("publishedDate") ? volumeInfo.get("publishedDate").toString() : null);
+        book.setPublishingHouse(volumeInfo.containsKey("publisher") ? volumeInfo.get("publisher").toString() : null);
+        book.setSummary(volumeInfo.containsKey("description") ? volumeInfo.get("description").toString() : null);
+        book.setPageCount(volumeInfo.containsKey("pageCount") ? volumeInfo.get("pageCount").toString() : null);
+        book.setLanguage(volumeInfo.containsKey("language") ? volumeInfo.get("language").toString() : null);
+
+
+        ArrayList authors = volumeInfo.containsKey("authors") ? (ArrayList) volumeInfo.get("authors") : null;
+        if (authors != null) {
+            for (Object authorobj : authors) {
+                if (authorService.existsAuthor(authorobj.toString())) {
+                    book.getAuthors().add(authorService.getAuthorbyName(authorobj.toString()));
+                } else {
+                    Author author = new Author();
+                    author.setName(authorobj.toString());
+                    authorService.saveAuthor(author);
+                    book.getAuthors().add(author);
+                }
+            }
+        }
+
+
+        ArrayList categories = volumeInfo.containsKey("categories") ? (ArrayList) volumeInfo.get("categories") : null;
+        if (categories != null) {
+            for (Object category : categories) {
+                if (genreService.existGenre(category.toString())) {
+                    book.getGenres().add(genreService.getGenre(category.toString()));
+                } else {
+                    Genre genre = new Genre();
+                    genre.setName(category.toString());
+                    genreService.saveGenre(genre);
+                    book.getGenres().add(genre);
+                }
+            }
+        }
+
+        saveBook(book);
+
+        return false;
+    }
+
+    public List<Book> getBooks(List<String> aiSuggestedTitles) {
+
+//        for (String title : aiSuggestedTitles) {
+//            try {
+//                String googleBooksApiUrl = "https://www.googleapis.com/books/v1/volumes?q=intitle:" +
+//                        URLEncoder.encode(title, StandardCharsets.UTF_8) + "&maxResults=1&langRestrict=en" +"&key=" + googleApiKey;
+//
+//                ResponseEntity<Map> response = restTemplate.exchange(googleBooksApiUrl, HttpMethod.GET, null, Map.class);
+//                Map<String, Object> responseBody = response.getBody();
+//
+//                if (responseBody != null && responseBody.containsKey("items")) {
+//                    List<Map> items = (List<Map>) responseBody.get("items");
+//
+//                    for (Map<String, Object> item : items) {
+//
+//                        Map<String, Object> volumeInfo = (Map<String, Object>) item.get("volumeInfo");
+//                        boolean bookExists = saveBook(volumeInfo);
+//                        if (bookExists) {
+//                            continue;
+//                        }
+//
+//                        System.out.println("\n\n");
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace(); // Handle exceptions (e.g., log them)
+//            }
+//        }
+
+        List<Book> foundBooks = new ArrayList<>();
+        for (String title: aiSuggestedTitles) {
+            foundBooks.addAll(getBooksByTitleContaining(title));
+        }
+
+        System.out.println(foundBooks);
+        return foundBooks;
     }
 }

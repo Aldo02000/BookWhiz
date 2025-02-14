@@ -77,6 +77,22 @@ public class Book {
         this.publishingDate = publishingDate;
     }
 
+    public Book(long id, String title, String image, Set<Author> authors, Set<Genre> genres,
+                String isbn10, String isbn13, String publishingDate, String publishingHouse, String language, int pages, String summary) {
+        this.id = id;
+        this.title = title;
+        this.imageLink = image;
+        this.authors = authors;
+        this.genres = genres;
+        this.isbn10 = isbn10;
+        this.isbn13 = isbn13;
+        this.publishingDate = publishingDate;
+        this.publishingHouse = publishingHouse;
+        this.language = language;
+        this.pageCount = Integer.toString(pages);
+        this.summary = summary;
+    }
+
     public String getBookInfo() {
 
         String bookAuthors = authors.stream()

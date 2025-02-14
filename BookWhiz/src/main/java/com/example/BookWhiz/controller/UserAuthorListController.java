@@ -1,18 +1,13 @@
 package com.example.BookWhiz.controller;
 
 import com.example.BookWhiz.dto.AuthorDto;
-import com.example.BookWhiz.dto.BookDto;
 import com.example.BookWhiz.model.Author;
 import com.example.BookWhiz.model.Book;
-import com.example.BookWhiz.model.BookListType;
-import com.example.BookWhiz.model.Genre;
 import com.example.BookWhiz.service.UserAuthorListService;
-import jakarta.persistence.AccessType;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
