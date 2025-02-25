@@ -101,195 +101,230 @@ class _SingUpScreenState extends State<SingUpScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(40),
+        padding: EdgeInsets.fromLTRB(
+          MediaQuery.of(context).size.width * 0.1,
+          MediaQuery.of(context).size.height * 0.02,
+          MediaQuery.of(context).size.width * 0.1,
+          MediaQuery.of(context).size.height * 0.01,
+        ),
         child: Form(
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2.5,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2.5,
+                          color: Color(0xFFCFB499),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xFFCFB499),
                       ),
-                      enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                    hintText: 'Email',
+                    suffixIcon: Icon(Icons.email),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Some Text";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.01),
+                child: TextFormField(
+                  controller: _username,
+                  decoration: const InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2.5,
+                          color: Color(0xFFCFB499),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
+                    enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 1,
                           color: Color(0xFFCFB499),
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
-                      hintText: 'Email',
-                      suffixIcon: Icon(Icons.email),
                     ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Some Text";
-                      }
-                      return null;
-                    },
+                    hintText: 'Username',
+                    suffixIcon: Icon(Icons.person)
                   ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Some Text";
+                    }
+                    return null;
+                  },
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  child: TextFormField(
-                    controller: _username,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2.5,
-                            color: Color(0xFFCFB499),
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.385,
+                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.01),
+                    child: TextFormField(
+                      controller: _passController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: _obscuredPassword,
+                      decoration: InputDecoration(
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2.5,
+                              color: Color(0xFFCFB499),
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(10))
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: Color(0xFFCFB499),
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(10))
+                        ),
+                        hintText: 'Password',
+                        suffixIcon: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            0,
+                            0,
+                            MediaQuery.of(context).size.width * 0.01,
+                            0
                           ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
-                      hintText: 'Username',
-                      suffixIcon: Icon(Icons.person)
-                    ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Some Text";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 180,
-                      margin: const EdgeInsets.symmetric(vertical: 5),
-                      child: TextFormField(
-                        controller: _passController,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: _obscuredPassword,
-                        decoration: InputDecoration(
-                          focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2.5,
-                                color: Color(0xFFCFB499),
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(10))
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFFCFB499),
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(10))
-                          ),
-                          hintText: 'Password',
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                            child: GestureDetector(
-                              onTap: _togglePasswrod,
-                              child: Icon(
-                                _obscuredPassword
-                                    ? Icons.visibility_rounded
-                                    : Icons.visibility_off_rounded,
-                                size: 24,
-                              ),
+                          child: GestureDetector(
+                            onTap: _togglePasswrod,
+                            child: Icon(
+                              _obscuredPassword
+                                  ? Icons.visibility_rounded
+                                  : Icons.visibility_off_rounded,
+                              size: MediaQuery.of(context).size.width * 0.06,
                             ),
                           ),
                         ),
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please Enter Some Text";
-                          }
-                          return null;
-                        },
                       ),
-                    ),
-                    Container(
-                      width: 177,
-                      margin: const EdgeInsets.fromLTRB(10, 5, 0, 10),
-                      child: TextFormField(
-                        controller: _repassController,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: _obscuredPassword2,
-                        decoration: InputDecoration(
-                          focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 2.5,
-                                color: Color(0xFFCFB499),
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(10))
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFFCFB499),
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(10))
-                          ),
-                          hintText: 'Confirm Password',
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                            child: GestureDetector(
-                              onTap: _togglePasswrod2,
-                              child: Icon(
-                                _obscuredPassword2
-                                    ? Icons.visibility_rounded
-                                    : Icons.visibility_off_rounded,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                        ),
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please Enter Some Text";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                 Padding(
-                  padding: const EdgeInsets.fromLTRB(2, 20, 2, 20),
-                  child: ElevatedButton(
-                    style: TextButton.styleFrom(
-                      minimumSize: Size(400, 50),
-                      backgroundColor: Color(0xFF9F723B),
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      _signup();
-                    },
-                    child: const Text(
-                      style: TextStyle(
-                        fontSize: 22,
-                      ),
-                      "Sign Up")),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Have an Account? "),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.brown,
-                      ),
-                      onPressed: (){
-                        Navigator.pushNamed(context, '/login');
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Some Text";
+                        }
+                        return null;
                       },
-                      child: const Text("Log In"),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.385,
+                    margin: EdgeInsets.fromLTRB(
+                        MediaQuery.of(context).size.width * 0.03,
+                        MediaQuery.of(context).size.width * 0.02,
+                        0,
+                        MediaQuery.of(context).size.width * 0.03
+                    ),
+                    child: TextFormField(
+                      controller: _repassController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: _obscuredPassword2,
+                      decoration: InputDecoration(
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2.5,
+                              color: Color(0xFFCFB499),
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(10))
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: Color(0xFFCFB499),
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(10))
+                        ),
+                        hintText: 'Confirm Password',
+                        suffixIcon: Padding(
+                          padding: EdgeInsets.fromLTRB(0,
+                              0,
+                              MediaQuery.of(context).size.width * 0.01,
+                              0),
+                          child: GestureDetector(
+                            onTap: _togglePasswrod2,
+                            child: Icon(
+                              _obscuredPassword2
+                                  ? Icons.visibility_rounded
+                                  : Icons.visibility_off_rounded,
+                              size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                          ),
+                        ),
+                      ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please Enter Some Text";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+               Padding(
+                padding: EdgeInsets.fromLTRB(
+                    MediaQuery.of(context).size.width * 0.005,
+                    MediaQuery.of(context).size.width * 0.05,
+                    MediaQuery.of(context).size.width * 0.005,
+                    MediaQuery.of(context).size.width * 0.05
+                ),
+                child: ElevatedButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: Size(
+                      MediaQuery.of(context).size.width * 0.97,
+                      MediaQuery.of(context).size.height * 0.056,
+                    ),
+                    backgroundColor: const Color(0xFF9F723B),
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    _signup();
+                  },
+                  child: Text(
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.025,
+                    ),
+                    "Sign Up")),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Have an Account? ",
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.02,
                     )
-                  ],
-                )
-              ],
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.brown,
+                    ),
+                    onPressed: (){
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: Text(
+                      "Log In",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.02,
+                      )),
+                  )
+                ],
+              )
+            ],
           )
         ),
       ),

@@ -1,6 +1,5 @@
 import 'package:book_whiz/authors/author_screen.dart';
 import 'package:book_whiz/mainApp/home_screen.dart';
-import 'package:book_whiz/mainApp/home_screen_test.dart';
 import 'package:book_whiz/library/library_screen.dart';
 import 'package:book_whiz/mainApp/profile_screen.dart';
 import 'package:book_whiz/genres/genre_screen.dart';
@@ -24,8 +23,7 @@ class _MyAppState extends State<MainScreen> {
       const HomeScreen(),
       const GenreScreen(),
       const AuthorScreen(),
-      const LibraryScreen(),
-      const ProfileScreen()
+      const LibraryScreen()
     ];
   }
 
@@ -53,12 +51,6 @@ class _MyAppState extends State<MainScreen> {
         icon: const Icon(CupertinoIcons.bookmark),
         title: ("Library"),
         activeColorPrimary: const Color(0xFFECDBC8),
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.person),
-        title: ("Profile"),
-        activeColorPrimary: const Color(0xFFD6B583),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       )
     ];

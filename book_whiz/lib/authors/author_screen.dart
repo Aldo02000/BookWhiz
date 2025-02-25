@@ -12,26 +12,32 @@ class AuthorScreen extends StatefulWidget {
 }
 
 class _AuthorScreenState extends State<AuthorScreen> {
-
   List<Author> authors = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchAuthors();
+    fetchAuthors(); // Fetch all authors on init
   }
 
-  Future<void> fetchAuthors() async {
-    // you can replace your api link with this link
-    final response = await http.get(
-        Uri.parse('http://10.0.2.2:8080/authors/allAuthors'));
+  Future<void> fetchAuthors({String? searchQuery}) async {
+    String url = 'http://10.0.2.2:8080/authors';
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      url += '/search?name=${Uri.encodeComponent(searchQuery)}';
+    } else {
+      url += '/allAuthors'; // Fetch all authors if no search query
+    }
+
+    final response = await http.get(Uri.parse(url));
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       setState(() {
         authors = jsonData.map((json) => Author.fromJson(json)).toList();
       });
     } else {
-      // Handle error if needed
+      // Handle error
     }
   }
 
@@ -52,43 +58,59 @@ class _AuthorScreenState extends State<AuthorScreen> {
               height: 40,
               child: Center(
                 child: Form(
-                    child: TextFormField(
-                      textAlignVertical: TextAlignVertical.bottom,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 2,
-                              color: Color(0xFFCFB499),
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(20))
+                  child: TextFormField(
+                    controller: _searchController,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: Color(0xFFCFB499),
                         ),
-                        enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: Color(0xFFCFB499),
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFFCFB499),
                         ),
-                        hintText: 'Search Author',
-                        suffixIcon: TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.brown,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      hintText: 'Search Author',
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_searchController.text.isNotEmpty)
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                fetchAuthors(); // Reload all authors when cleared
+                              },
+                            ),
+                          IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              fetchAuthors(searchQuery: _searchController.text);
+                            },
                           ),
-                            onPressed: () {},
-                        child: const Icon(Icons.search)
-                        ),
-                      )
-                    )
+                        ],
+                      ),
+                    ),
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        fetchAuthors(); // Show all authors if input is empty
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-          Container(
-            height: 630,
+          Expanded(
             child: ListView.builder(
-              scrollDirection: Axis.vertical,
               itemCount: authors.length,
               itemBuilder: (context, index) {
                 return ListTile(
@@ -97,9 +119,9 @@ class _AuthorScreenState extends State<AuthorScreen> {
                       border: Border(
                         bottom: BorderSide(
                           color: Colors.black,
-                          width: 0.7
-                        )
-                      )
+                          width: 0.7,
+                        ),
+                      ),
                     ),
                     child: TextButton(
                       style: TextButton.styleFrom(
@@ -111,13 +133,14 @@ class _AuthorScreenState extends State<AuthorScreen> {
                           MaterialPageRoute(
                             builder: (context) => SpecificAuthorScreen(
                               authorName: authors[index].name,
-                              authorId: authors[index].id),
+                              authorId: authors[index].id,
+                            ),
                           ),
                         );
                       },
                       child: Row(
                         children: [
-                          Container(
+                          SizedBox(
                             width: 320,
                             child: Text(
                               authors[index].name,
@@ -127,7 +150,7 @@ class _AuthorScreenState extends State<AuthorScreen> {
                           const Icon(
                             Icons.arrow_forward_ios,
                             size: 17,
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -137,8 +160,7 @@ class _AuthorScreenState extends State<AuthorScreen> {
             ),
           ),
         ],
-      )
+      ),
     );
   }
-
 }

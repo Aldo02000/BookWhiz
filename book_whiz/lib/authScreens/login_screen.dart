@@ -61,133 +61,155 @@ class _LogInScreenState extends State<LogInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30),
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.073),
           child: Text(
             'Log In',
             style: TextStyle(
-              fontSize: 30,
+              fontSize: screenHeight * 0.034,
               color: Color(0xFF8A6D47),
             ),
           ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(40),
+        padding: EdgeInsets.all(screenWidth * 0.097),
         child: Form(
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2.5,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(vertical: screenHeight * 0.0056),
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 2.5,
+                        color: Color(0xFFCFB499),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
-                      hintText: 'Email',
-                      suffixIcon: Icon(Icons.email),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Some Text";
-                      }
-                      return null;
-                    },
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xFFCFB499),
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    hintText: 'Email',
+                    suffixIcon: Icon(Icons.email),
                   ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Some Text";
+                    }
+                    return null;
+                  },
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  child: TextFormField(
-                    controller: _passController,
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: _obscuredPassword,
-                    decoration: InputDecoration(
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2.5,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: screenHeight * 0.0056),
+                child: TextFormField(
+                  controller: _passController,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: _obscuredPassword,
+                  decoration: InputDecoration(
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 2.5,
+                        color: Color(0xFFCFB499),
                       ),
-                      enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xFFCFB499),
                       ),
-                      hintText: 'Password',
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                        child: GestureDetector(
-                          onTap: _togglePasswrod,
-                          child: Icon(
-                            _obscuredPassword
-                                ? Icons.visibility_rounded
-                                : Icons.visibility_off_rounded,
-                            size: 24,
-                          ),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    hintText: 'Password',
+                    suffixIcon: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          0,
+                          0,
+                          screenWidth * 0.01,
+                          0
+                      ),
+                      child: GestureDetector(
+                        onTap: _togglePasswrod,
+                        child: Icon(
+                          _obscuredPassword
+                              ? Icons.visibility_rounded
+                              : Icons.visibility_off_rounded,
+                          size: screenHeight * 0.027,
                         ),
                       ),
                     ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Some Text";
-                      }
-                      return null;
-                    },
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Some Text";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(screenWidth * 0.005, screenHeight * 0.022, screenWidth * 0.005, screenHeight * 0.022),
+                child: ElevatedButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: Size(
+                      screenWidth * 0.97,
+                      screenHeight * 0.056,
+                    ),
+                    backgroundColor: const Color(0xFF9F723B),
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    _login();
+                  },
+                  child: Text(
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.025,
+                    ),
+                    "Log In",
                   ),
                 ),
-
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(2, 20, 2, 20),
-                  child: ElevatedButton(
-                      style: TextButton.styleFrom(
-                        minimumSize: const Size(400, 50),
-                        backgroundColor: const Color(0xFF9F723B),
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        _login();
-                      },
-                      child: const Text(
-                          style: TextStyle(
-                            fontSize: 22,
-                          ),
-                          "Log In")),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Don't Have an Account? "),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.brown,
-                      ),
-                      onPressed: (){
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: const Text("Sign Up"),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't Have an Account? ",
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.02,
                     )
-                  ],
-                )
-              ],
-            )
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.brown,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/signup');
+                    },
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.02,
+                      )
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Image.asset(
@@ -195,5 +217,6 @@ class _LogInScreenState extends State<LogInScreen> {
       ),
     );
   }
+
 
 }

@@ -12,19 +12,25 @@ class GenreScreen extends StatefulWidget {
 }
 
 class _GenreScreenState extends State<GenreScreen> {
-
   List<Genre> genres = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchGenres();
+    fetchGenres(); // Load all genres initially
   }
 
-  Future<void> fetchGenres() async {
-    // you can replace your api link with this link
-    final response = await http.get(
-        Uri.parse('http://10.0.2.2:8080/genres/allGenres'));
+  Future<void> fetchGenres({String? searchQuery}) async {
+    String url = 'http://10.0.2.2:8080/genres';
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      url += '/search?genreName=${Uri.encodeComponent(searchQuery)}';
+    } else {
+      url += '/allGenres'; // Fetch all genres if no search term
+    }
+
+    final response = await http.get(Uri.parse(url));
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       setState(() {
@@ -52,43 +58,59 @@ class _GenreScreenState extends State<GenreScreen> {
               height: 40,
               child: Center(
                 child: Form(
-                    child: TextFormField(
-                      textAlignVertical: TextAlignVertical.bottom,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 2,
-                              color: Color(0xFFCFB499),
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(20))
+                  child: TextFormField(
+                    controller: _searchController,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: Color(0xFFCFB499),
                         ),
-                        enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: Color(0xFFCFB499),
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(20))
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFFCFB499),
                         ),
-                        hintText: 'Search Genre',
-                        suffixIcon: TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.brown,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      hintText: 'Search Genre',
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_searchController.text.isNotEmpty)
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                fetchGenres(); // Reset to all genres
+                              },
+                            ),
+                          IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              fetchGenres(searchQuery: _searchController.text);
+                            },
                           ),
-                            onPressed: () {},
-                        child: const Icon(Icons.search)
-                        ),
-                      )
-                    )
+                        ],
+                      ),
+                    ),
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        fetchGenres(); // Show all genres if search is empty
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-          Container(
-            height: 630,
+          Expanded(
             child: ListView.builder(
-              scrollDirection: Axis.vertical,
               itemCount: genres.length,
               itemBuilder: (context, index) {
                 return ListTile(
@@ -97,9 +119,9 @@ class _GenreScreenState extends State<GenreScreen> {
                       border: Border(
                         bottom: BorderSide(
                           color: Colors.black,
-                          width: 0.7
-                        )
-                      )
+                          width: 0.7,
+                        ),
+                      ),
                     ),
                     child: TextButton(
                       style: TextButton.styleFrom(
@@ -111,14 +133,14 @@ class _GenreScreenState extends State<GenreScreen> {
                           MaterialPageRoute(
                             builder: (context) => SpecificGenreScreen(
                               genreId: genres[index].id,
-                              genreName: genres[index].name
+                              genreName: genres[index].name,
                             ),
                           ),
                         );
                       },
                       child: Row(
                         children: [
-                          Container(
+                          SizedBox(
                             width: 320,
                             child: Text(
                               genres[index].name,
@@ -128,7 +150,7 @@ class _GenreScreenState extends State<GenreScreen> {
                           const Icon(
                             Icons.arrow_forward_ios,
                             size: 17,
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -138,8 +160,7 @@ class _GenreScreenState extends State<GenreScreen> {
             ),
           ),
         ],
-      )
+      ),
     );
   }
-
 }

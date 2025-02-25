@@ -45,89 +45,110 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30),
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.073),
           child: Text(
             'Verify',
             style: TextStyle(
-              fontSize: 30,
-              color: Color(0xFF8A6D47),
+              fontSize: screenHeight * 0.034,
+              color: const Color(0xFF8A6D47),
             ),
           ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(40),
+        padding: EdgeInsets.all(screenWidth * 0.097),
         child: Form(
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  child: TextFormField(
-                    controller: _verificationController,
-                    decoration: const InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 2.5,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(vertical: screenHeight * 0.0056),
+                child: TextFormField(
+                  controller: _verificationController,
+                  decoration: const InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 2.5,
+                        color: Color(0xFFCFB499),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFFCFB499),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
-                      hintText: 'Verification Code',
-                      suffixIcon: Icon(Icons.verified),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please Enter Some Text";
-                      }
-                      return null;
-                    },
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xFFCFB499),
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    hintText: 'Verification Code',
+                    suffixIcon: Icon(Icons.verified),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Some Text";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  screenWidth * 0.005,
+                  screenHeight * 0.022,
+                  screenWidth * 0.005,
+                  screenHeight * 0.022,
+                ),
+                child: ElevatedButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: Size(
+                      screenWidth * 0.97,
+                      screenHeight * 0.056,
+                    ),
+                    backgroundColor: const Color(0xFF9F723B),
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    _verification();
+                  },
+                  child: Text(
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.025,
+                    ),
+                    "Verify",
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(2, 20, 2, 20),
-                  child: ElevatedButton(
-                      style: TextButton.styleFrom(
-                        minimumSize: const Size(400, 50),
-                        backgroundColor: const Color(0xFF9F723B),
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        _verification();
-                      },
-                      child: const Text(
-                          style: TextStyle(
-                            fontSize: 22,
-                          ),
-                          "Verify")),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Haven't Received the Code? "),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.brown,
-                      ),
-                      onPressed: (){
-                        Navigator.pushNamed(context, '/');
-                      },
-                      child: const Text("Resend"),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Haven't Received the Code? ",
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.017,
                     )
-                  ],
-                )
-              ],
-            )
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.brown,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: Text("Resend",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height * 0.018,
+                      )
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Image.asset(
@@ -135,5 +156,4 @@ class _VerificationScreenState extends State<VerificationScreen> {
       ),
     );
   }
-
 }
