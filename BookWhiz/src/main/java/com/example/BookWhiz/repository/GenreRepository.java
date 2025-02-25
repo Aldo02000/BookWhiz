@@ -1,5 +1,6 @@
 package com.example.BookWhiz.repository;
 
+import com.example.BookWhiz.model.Author;
 import com.example.BookWhiz.model.Genre;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,5 @@ import java.util.Set;
 
 public interface GenreRepository extends JpaRepository<Genre, Integer> {
     Optional<Genre> findByName(String name);
+    Set<Genre> findByNameContainingIgnoreCase(String partOfName);
 }

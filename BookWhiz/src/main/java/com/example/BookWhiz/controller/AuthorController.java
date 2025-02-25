@@ -51,4 +51,24 @@ public class AuthorController {
 
         return authorDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(authorDtos);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Set<AuthorDto>> searchAuthors(@RequestParam String name) {
+        Set<Author> authors = authorService.getAuthorsByPartOfName(name);
+
+        Set<AuthorDto> authorDtos = authors.stream()
+                .map(author -> new AuthorDto(
+                        author.getId(),
+                        author.getName(),
+                        author.getBirthDate(),
+                        author.getBiography(),
+                        author.getBooks().stream()
+                                .map(Book::getTitle)
+                                .collect(Collectors.toSet())
+                ))
+                .sorted(Comparator.comparing(AuthorDto::getName))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        return authorDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(authorDtos);
+    }
 }

@@ -35,6 +35,10 @@ public class BookWhizApplication implements CommandLineRunner {
         SpringApplication.run(BookWhizApplication.class, args);
     }
 
+    /**
+     * This method can be used for different functionalities out of the main flow of the application.
+     * It can be effectively used to populate the database.
+     */
     @Override
     public void run(String... args) throws Exception {
         // List<String> genres = databaseInitializerService.readGenreListFromFile();

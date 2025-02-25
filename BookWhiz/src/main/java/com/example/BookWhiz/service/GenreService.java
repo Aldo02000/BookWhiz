@@ -27,6 +27,11 @@ public class GenreService {
         }
     }
 
+    public Set<Genre> getGenresByPartOfName(String partOfName) {
+        Set<Genre> existingGenres = genreRepository.findByNameContainingIgnoreCase(partOfName);
+        return existingGenres;
+    }
+
     public boolean existGenre(String name) {
         return genreRepository.findByName(name).isPresent();
     }

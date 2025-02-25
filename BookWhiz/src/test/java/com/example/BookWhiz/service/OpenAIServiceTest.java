@@ -64,7 +64,7 @@ class OpenAIServiceTest {
         ResponseEntity<Map> mockResponse = new ResponseEntity<>(mockResponseBody, HttpStatus.OK);
         doReturn(mockResponse).when(restTemplate).exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Map.class));
 
-        // Mock book retrieval from BookController
+        // Mock book retrieval from BookService
         List<Book> mockBooks = List.of(
                 new Book(1L, "Suggested Book 1", "img1.jpg", new HashSet<>(), new HashSet<>(), "1234567890", "9876543210123",
                         "2020-01-01", "Publisher A", "English", 300, "Summary 1"),

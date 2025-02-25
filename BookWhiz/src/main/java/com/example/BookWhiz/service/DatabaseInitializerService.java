@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class serves as a database initializer by using google books API.
+ * To make this class work, an API Key is necessary.
+ * Also, different books depending on different genres can be fetched from the API call.
+ */
 @Service
 public class DatabaseInitializerService {
 

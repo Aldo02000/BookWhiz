@@ -6,9 +6,13 @@ import com.example.BookWhiz.model.Genre;
 import com.example.BookWhiz.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
@@ -144,34 +148,43 @@ public class BookService {
         return false;
     }
 
+    /**
+     * This method retrieves the books from the google books api
+     * It is used if a book suggested by the AI is not in the database.
+     * It is not being used, but it can be changed to make use it in the getBooks() method
+     */
+    public void retrieveBooksFromGoogleApi(List<String> aiSuggestedTitles) {
+                for (String title : aiSuggestedTitles) {
+            try {
+                String googleBooksApiUrl = "https://www.googleapis.com/books/v1/volumes?q=intitle:" +
+                URLEncoder.encode(title, StandardCharsets.UTF_8) + "&maxResults=1&langRestrict=en" +"&key=" + googleApiKey;
+
+                ResponseEntity<Map> response = restTemplate.exchange(googleBooksApiUrl, HttpMethod.GET, null, Map.class);
+                Map<String, Object> responseBody = response.getBody();
+
+                if (responseBody != null && responseBody.containsKey("items")) {
+                    List<Map> items = (List<Map>) responseBody.get("items");
+
+                    for (Map<String, Object> item : items) {
+
+                        Map<String, Object> volumeInfo = (Map<String, Object>) item.get("volumeInfo");
+                        boolean bookExists = saveBookData(volumeInfo);
+                        if (bookExists) {
+                            continue;
+                        }
+
+                        System.out.println("\n\n");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Handle exceptions (e.g., log them)
+            }
+        }
+    }
+
     public List<Book> getBooks(List<String> aiSuggestedTitles) {
 
-//        for (String title : aiSuggestedTitles) {
-//            try {
-//                String googleBooksApiUrl = "https://www.googleapis.com/books/v1/volumes?q=intitle:" +
-//                        URLEncoder.encode(title, StandardCharsets.UTF_8) + "&maxResults=1&langRestrict=en" +"&key=" + googleApiKey;
-//
-//                ResponseEntity<Map> response = restTemplate.exchange(googleBooksApiUrl, HttpMethod.GET, null, Map.class);
-//                Map<String, Object> responseBody = response.getBody();
-//
-//                if (responseBody != null && responseBody.containsKey("items")) {
-//                    List<Map> items = (List<Map>) responseBody.get("items");
-//
-//                    for (Map<String, Object> item : items) {
-//
-//                        Map<String, Object> volumeInfo = (Map<String, Object>) item.get("volumeInfo");
-//                        boolean bookExists = saveBook(volumeInfo);
-//                        if (bookExists) {
-//                            continue;
-//                        }
-//
-//                        System.out.println("\n\n");
-//                    }
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace(); // Handle exceptions (e.g., log them)
-//            }
-//        }
+        // retrieveBooksFromGoogleApi(aiSuggestedTitles);
 
         List<Book> foundBooks = new ArrayList<>();
         for (String title: aiSuggestedTitles) {

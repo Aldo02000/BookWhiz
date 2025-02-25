@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
@@ -30,6 +31,24 @@ public class GenreController {
     @GetMapping("/allGenres")
     public ResponseEntity<Set<GenreDto>> getAllGenres() {
         List<Genre> genres = genreService.getAllGenres();
+
+        Set<GenreDto> genreDtos = genres.stream()
+                .map(genre -> new GenreDto(
+                        genre.getId(),
+                        genre.getName(),
+                        genre.getBooks().stream()
+                                .map(Book::getTitle)
+                                .collect(Collectors.toSet())
+                ))
+                .sorted(Comparator.comparing(GenreDto::getName))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        return genreDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(genreDtos);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Set<GenreDto>> searchGenres(@RequestParam String genreName) {
+        Set<Genre> genres = genreService.getGenresByPartOfName(genreName);
 
         Set<GenreDto> genreDtos = genres.stream()
                 .map(genre -> new GenreDto(
