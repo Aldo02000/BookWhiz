@@ -32,25 +32,25 @@ class _MyAppState extends State<MainScreen> {
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.home),
         title: ("Home"),
-        activeColorPrimary: const Color(0xFFECDBC8),
+        activeColorPrimary: const Color(0xFFED9247),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.book),
         title: ("Genres"),
-        activeColorPrimary: const Color(0xFFECDBC8),
+        activeColorPrimary: const Color(0xFFED9247),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.person_3),
         title: ("Authors"),
-        activeColorPrimary: const Color(0xFFECDBC8),
+        activeColorPrimary: const Color(0xFFED9247),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.bookmark),
         title: ("Library"),
-        activeColorPrimary: const Color(0xFFECDBC8),
+        activeColorPrimary: const Color(0xFFED9247),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       )
     ];
@@ -72,7 +72,7 @@ class _MyAppState extends State<MainScreen> {
           hideNavigationBarWhenKeyboardAppears: true,
           //popBehaviorOnSelectedNavBarItemPress: PopActionScreensType.all,
           padding: const EdgeInsets.only(top: 8),
-          backgroundColor: const Color(0xFF3E2A0A),
+          backgroundColor: const Color(0xFFF6EEE5),
           isVisible: true,
           animationSettings: const NavBarAnimationSettings(
             navBarItemAnimation: ItemAnimationSettings( // Navigation Bar's items animation properties.

@@ -14,6 +14,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  final TextEditingController _searchController = TextEditingController();
+  Future<List<Book>>? _booksFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _booksFuture = fetchTopRatedBooks(); // Load top-rated books initially
+  }
+
+  Future<List<Book>> fetchBooks({String? searchQuery}) async {
+    final String url = searchQuery != null && searchQuery.isNotEmpty
+        ? 'http://10.0.2.2:8080/books/search/title?title=$searchQuery'
+        : 'http://10.0.2.2:8080/books/topRated';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final List<dynamic> bookList = json.decode(response.body);
+      return bookList.map((json) => Book.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load books');
+    }
+  }
+
+  void _performSearch() {
+    setState(() {
+      _booksFuture = fetchBooks(searchQuery: _searchController.text);
+    });
+  }
+
   Future<List<Book>> fetchTopRatedBooks() async {
     final response = await http.get(Uri.parse('http://10.0.2.2:8080/books/topRated'));
 
@@ -30,30 +59,96 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFE1C39C),
-        title: Text('Top Rated Books'),
+        title: Text('Books'),
       ),
-      body: FutureBuilder<List<Book>>(
-        future: fetchTopRatedBooks(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No top-rated books found'));
-          }
+      body: Column(
+        children: [
+          Center(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+              width: 300,
+              height: 40,
+              child: Center(
+                child: Form(
+                  child: TextFormField(
+                    controller: _searchController,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 2,
+                          color: Color(0xFFCFB499),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFFCFB499),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      hintText: 'Search By Title',
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_searchController.text.isNotEmpty)
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {
+                                  _booksFuture = fetchTopRatedBooks();
+                                });
+                              },
+                            ),
+                          IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: _performSearch,
+                          ),
+                        ],
+                      ),
+                    ),
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        setState(() {
+                          _booksFuture = fetchTopRatedBooks();
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Book>>(
+              future: _booksFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No books found'));
+                }
 
-          final books = snapshot.data!;
-          return ListView.builder(
-            itemCount: books.length,
-            itemBuilder: (context, index) {
-              final book = books[index];
-              return BookCard(
-                book: book, // Assuming BookCard takes a `book` parameter
-              );
-            },
-          );
-        },
+                final books = snapshot.data!;
+                return ListView.builder(
+                  itemCount: books.length,
+                  itemBuilder: (context, index) {
+                    final book = books[index];
+                    return BookCard(
+                      book: book,
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
