@@ -76,7 +76,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public List<Book> getBooksByTitleContaining(String title) {
+    public Set<Book> getBooksByTitleContaining(String title) {
         return bookRepository.findByTitleContainingIgnoreCase(title);
     }
 
