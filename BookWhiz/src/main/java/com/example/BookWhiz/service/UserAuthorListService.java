@@ -22,15 +22,19 @@ public class UserAuthorListService {
 
     @Autowired
     private final AuthorRepository authorRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private AuthorService authorService;
 
-    public UserAuthorListService(UserAuthorListRepository userAuthorListRepository, UserRepository userRepository, AuthorRepository authorRepository) {
+    @Autowired
+    private final UserService userService;
+
+    @Autowired
+    private final AuthorService authorService;
+
+    public UserAuthorListService(UserAuthorListRepository userAuthorListRepository, UserRepository userRepository, AuthorRepository authorRepository, UserService userService, AuthorService authorService) {
         this.userAuthorListRepository = userAuthorListRepository;
         this.userRepository = userRepository;
         this.authorRepository = authorRepository;
+        this.userService = userService;
+        this.authorService = authorService;
     }
 
     public void addAuthorToUserList(Long userId, Integer authorId) {

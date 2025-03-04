@@ -24,34 +24,21 @@ public class UserBookListService {
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired// Assuming this exists
-    private final BookRepository bookRepository; // Assuming this exists
     @Autowired
-    private UserService userService;
-    @Autowired
-    private BookService bookService;
+    private final BookRepository bookRepository;
 
-    public UserBookListService(UserBookListRepository userBookListRepository, UserRepository userRepository, BookRepository bookRepository) {
+    @Autowired
+    private final UserService userService;
+
+    @Autowired
+    private final BookService bookService;
+
+    public UserBookListService(UserBookListRepository userBookListRepository, UserRepository userRepository, BookRepository bookRepository, UserService userService, BookService bookService) {
         this.userBookListRepository = userBookListRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
-    }
-
-    public void saveUserBookList(UserBookList userBookList) {
-        userBookListRepository.save(userBookList);
-    }
-
-    public UserBookList getUserBookListById(Long id) {
-        Optional<UserBookList> userBookListOptional = userBookListRepository.findById(id);
-        return userBookListOptional.orElse(null);
-    }
-
-    public void addBookInUserBookList(Book book, UserBookList userBookList) {
-        userBookList.getBooks().add(book);
-    }
-
-    public void saveUserInUserBookList(User user, UserBookList userBookList) {
-        userBookList.setUser(user);
+        this.userService = userService;
+        this.bookService = bookService;
     }
 
     public void addBookToUserList(Long userId, Long bookId, BookListType listType) {

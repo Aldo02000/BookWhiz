@@ -19,12 +19,15 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     @Autowired
-    private UserService userService;
-    @Autowired
-    private BookService bookService;
+    private final UserService userService;
 
-    public ReviewService(ReviewRepository reviewRepository) {
+    @Autowired
+    private final BookService bookService;
+
+    public ReviewService(ReviewRepository reviewRepository, UserService userService, BookService bookService) {
         this.reviewRepository = reviewRepository;
+        this.userService = userService;
+        this.bookService = bookService;
     }
 
     public List<Review> getAllReviews() {

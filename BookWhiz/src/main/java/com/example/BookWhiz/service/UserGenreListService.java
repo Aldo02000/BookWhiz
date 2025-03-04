@@ -19,15 +19,19 @@ public class UserGenreListService {
 
     @Autowired
     private final GenreRepository genreRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private GenreService genreService;
 
-    public UserGenreListService(UserGenreListRepository userGenreListRepository, UserRepository userRepository, GenreRepository genreRepository) {
+    @Autowired
+    private final UserService userService;
+
+    @Autowired
+    private final GenreService genreService;
+
+    public UserGenreListService(UserGenreListRepository userGenreListRepository, UserRepository userRepository, GenreRepository genreRepository, UserService userService, GenreService genreService) {
         this.userGenreListRepository = userGenreListRepository;
         this.userRepository = userRepository;
         this.genreRepository = genreRepository;
+        this.userService = userService;
+        this.genreService = genreService;
     }
 
     public void addGenreToUserList(Long userId, Integer genreId) {
