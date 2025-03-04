@@ -101,7 +101,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             onPressed: books.isNotEmpty
                 ? () => fetchSuggestions(books)
                 : null,
-            child: const Text('Get Suggestions'),
+            child: const Text(
+              'Get Suggestions',
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFFED9247)
+              ),),
           ),
         ],
       ),

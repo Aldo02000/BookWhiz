@@ -23,7 +23,8 @@ class _MyAppState extends State<MainScreen> {
       const HomeScreen(),
       const GenreScreen(),
       const AuthorScreen(),
-      const LibraryScreen()
+      const LibraryScreen(),
+      const ProfileScreen()
     ];
   }
 
@@ -49,6 +50,12 @@ class _MyAppState extends State<MainScreen> {
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.bookmark),
+        title: ("Library"),
+        activeColorPrimary: const Color(0xFFED9247),
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.profile_circled),
         title: ("Library"),
         activeColorPrimary: const Color(0xFFED9247),
         inactiveColorPrimary: CupertinoColors.systemGrey,
