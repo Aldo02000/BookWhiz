@@ -27,7 +27,6 @@ public class GenreServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);  // Initialize mocks
         genre = new Genre();
         genre.setName("Fantasy");
     }

@@ -29,7 +29,6 @@ public class BookServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);  // Initialize mocks
         book = new Book();
         book.setIsbn13("9780134685991");
         book.setTitle("Effective Java");

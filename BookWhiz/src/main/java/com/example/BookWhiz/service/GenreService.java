@@ -13,7 +13,11 @@ import java.util.Set;
 public class GenreService {
 
     @Autowired
-    private GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
+
+    public GenreService(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
+    }
 
     public void saveGenre(Genre genre) {
         // Check if the author already exists in the database by name

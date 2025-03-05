@@ -11,7 +11,11 @@ import java.util.*;
 public class AuthorService {
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private final AuthorRepository authorRepository;
+
+    public AuthorService(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
+    }
 
     public void saveAuthor(Author author) {
         // Check if the author already exists in the database by name

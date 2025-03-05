@@ -19,22 +19,29 @@ import java.util.*;
 public class BookService {
 
     @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
-    private AuthorService authorService;
+    private final AuthorService authorService;
 
     @Autowired
-    private GenreService genreService;
+    private final GenreService genreService;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     @Value("${google.books.api.key}")
     private String googleApiKey;
 
     @Value("${google.books.api.url}")
     private String baseUrl;
+
+    public BookService(BookRepository bookRepository, AuthorService authorService, GenreService genreService, RestTemplate restTemplate) {
+        this.bookRepository = bookRepository;
+        this.authorService = authorService;
+        this.genreService = genreService;
+        this.restTemplate = restTemplate;
+    }
 
     public void saveBook(Book book) {
         Optional<Book> existingBook = bookRepository.findByIsbn13(book.getIsbn13());
