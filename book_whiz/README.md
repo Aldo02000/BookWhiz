@@ -1,6 +1,6 @@
 # book_whiz
 
-Thesis Project
+The frontend of this project
 
 ## Getting Started
 
