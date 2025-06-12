@@ -29,39 +29,17 @@ public class GenreController {
     }
 
     @GetMapping("/allGenres")
-    public ResponseEntity<Set<GenreDto>> getAllGenres() {
+    public ResponseEntity<List<GenreDto>> getAllGenres() {
         List<Genre> genres = genreService.getAllGenres();
 
-        Set<GenreDto> genreDtos = genres.stream()
-                .map(genre -> new GenreDto(
-                        genre.getId(),
-                        genre.getName(),
-                        genre.getBooks().stream()
-                                .map(Book::getTitle)
-                                .collect(Collectors.toSet())
-                ))
-                .sorted(Comparator.comparing(GenreDto::getName))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
-        return genreDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(genreDtos);
+        return genres.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(genreService.mapToDtoList(genres));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Set<GenreDto>> searchGenres(@RequestParam String genreName) {
-        Set<Genre> genres = genreService.getGenresByPartOfName(genreName);
+    public ResponseEntity<List<GenreDto>> searchGenres(@RequestParam String genreName) {
+        List<Genre> genres = genreService.getGenresByPartOfName(genreName);
 
-        Set<GenreDto> genreDtos = genres.stream()
-                .map(genre -> new GenreDto(
-                        genre.getId(),
-                        genre.getName(),
-                        genre.getBooks().stream()
-                                .map(Book::getTitle)
-                                .collect(Collectors.toSet())
-                ))
-                .sorted(Comparator.comparing(GenreDto::getName))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
-        return genreDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(genreDtos);
+        return genres.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(genreService.mapToDtoList(genres));
     }
 
 }

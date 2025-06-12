@@ -58,11 +58,11 @@ public class GenreServiceTest {
     @Test
     public void testGetGenresByPartOfName_shouldReturnGenres() {
         // Arrange
-        Set<Genre> genres = Set.of(genre);
+        List<Genre> genres = List.of(genre);
         when(genreRepository.findByNameContainingIgnoreCase("Fan")).thenReturn(genres);
 
         // Act
-        Set<Genre> result = genreService.getGenresByPartOfName("Fan");
+        List<Genre> result = genreService.getGenresByPartOfName("Fan");
 
         // Assert
         assertNotNull(result);

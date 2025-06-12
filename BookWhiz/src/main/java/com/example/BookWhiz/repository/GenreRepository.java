@@ -10,5 +10,5 @@ import java.util.Set;
 
 public interface GenreRepository extends JpaRepository<Genre, Integer> {
     Optional<Genre> findByName(String name);
-    Set<Genre> findByNameContainingIgnoreCase(String partOfName);
+    List<Genre> findByNameContainingIgnoreCase(String partOfName);
 }

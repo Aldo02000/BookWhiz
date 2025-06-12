@@ -12,7 +12,7 @@ import java.util.Set;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findByIsbn13(String isbn13);
-    Set<Book> findByAuthors(Author author);
-    Set<Book> findByTitleContainingIgnoreCase(String title);
-    Set<Book> findByGenres(Genre genre);
+    List<Book> findByAuthors(Author author);
+    List<Book> findByTitleContainingIgnoreCase(String title);
+    List<Book> findByGenres(Genre genre);
 }

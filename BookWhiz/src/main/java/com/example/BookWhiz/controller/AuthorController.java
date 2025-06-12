@@ -32,43 +32,17 @@ public class AuthorController {
     }
 
     @GetMapping("/allAuthors")
-    public ResponseEntity<Set<AuthorDto>> getAllAuthors() {
+    public ResponseEntity<List<AuthorDto>> getAllAuthors() {
 
         List<Author> authors = authorService.getAllAuthors();
 
-        Set<AuthorDto> authorDtos = authors.stream()
-                .map(author -> new AuthorDto(
-                        author.getId(),
-                        author.getName(),
-                        author.getBirthDate(),
-                        author.getBiography(),
-                        author.getBooks().stream()
-                                .map(Book::getTitle)
-                                .collect(Collectors.toSet())
-                ))
-                .sorted(Comparator.comparing(AuthorDto::getName))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
-        return authorDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(authorDtos);
+        return authors.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(authorService.mapToDTOList(authors));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Set<AuthorDto>> searchAuthors(@RequestParam String name) {
-        Set<Author> authors = authorService.getAuthorsByPartOfName(name);
+    public ResponseEntity<List<AuthorDto>> searchAuthors(@RequestParam String name) {
+        List<Author> authors = authorService.getAuthorsByPartOfName(name);
 
-        Set<AuthorDto> authorDtos = authors.stream()
-                .map(author -> new AuthorDto(
-                        author.getId(),
-                        author.getName(),
-                        author.getBirthDate(),
-                        author.getBiography(),
-                        author.getBooks().stream()
-                                .map(Book::getTitle)
-                                .collect(Collectors.toSet())
-                ))
-                .sorted(Comparator.comparing(AuthorDto::getName))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
-        return authorDtos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(authorDtos);
+        return authors.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(authorService.mapToDTOList(authors));
     }
 }

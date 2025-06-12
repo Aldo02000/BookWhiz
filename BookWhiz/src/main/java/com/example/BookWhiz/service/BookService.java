@@ -1,5 +1,8 @@
 package com.example.BookWhiz.service;
 
+import com.example.BookWhiz.dto.AuthorDto;
+import com.example.BookWhiz.dto.BookDto;
+import com.example.BookWhiz.dto.GenreDto;
 import com.example.BookWhiz.model.Author;
 import com.example.BookWhiz.model.Book;
 import com.example.BookWhiz.model.Genre;
@@ -14,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -52,8 +56,8 @@ public class BookService {
         }
     }
 
-    public Set<Book> getBooksByTitle(String title) {
-        return (Set<Book>) bookRepository.findByTitleContainingIgnoreCase(title);
+    public List<Book> getBooksByTitle(String title) {
+        return bookRepository.findByTitleContainingIgnoreCase(title);
     }
 
     public boolean existsBook(String isbn13) {
@@ -61,11 +65,11 @@ public class BookService {
         return existingBook.isPresent();
     }
 
-    public Set<Book> getBooksByGenre(Genre genre) {
+    public List<Book> getBooksByGenre(Genre genre) {
         return bookRepository.findByGenres(genre);
     }
 
-    public Set<Book> getBooksByAuthor(Author author) {
+    public List<Book> getBooksByAuthor(Author author) {
         return bookRepository.findByAuthors(author);
     }
 
@@ -83,7 +87,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Set<Book> getBooksByTitleContaining(String title) {
+    public List<Book> getBooksByTitleContaining(String title) {
         return bookRepository.findByTitleContainingIgnoreCase(title);
     }
 
@@ -200,5 +204,57 @@ public class BookService {
 
         System.out.println(foundBooks);
         return foundBooks;
+    }
+
+    public List<BookDto> mapToDTOList(List<Book> books) {
+
+        List<BookDto> bookDTOs = books.stream()
+                .map(book -> new BookDto(
+                        book.getId(),
+                        book.getTitle(),
+                        book.getImageLink(),
+                        book.getAuthors().stream()
+                                .map(author -> new AuthorDto(
+                                        author.getId(),
+                                        author.getName()
+                                )) // Assuming `getName` returns the author's name
+                                .collect(Collectors.toSet()),
+                        book.getGenres().stream()
+                                .map(genreDto -> new GenreDto(
+                                        genreDto.getId(),
+                                        genreDto.getName()
+                                ))
+                                .collect(Collectors.toSet()),
+                        book.getIsbn10(),
+                        book.getIsbn13(),
+                        book.getPublishingDate(),
+                        book.getPublishingHouse(),
+                        book.getLanguage(),
+                        book.getPageCount(),
+                        book.getSummary()
+                ))
+                .collect(Collectors.toList());
+
+        return bookDTOs;
+    }
+
+    public BookDto mapToDTO(Book book) {
+        BookDto bookDTO = new BookDto(book.getId(), book.getTitle(), book.getImageLink(),
+                book.getAuthors().stream()
+                        .map(author -> new AuthorDto(
+                                author.getId(),
+                                author.getName()
+                        ))
+                        .collect(Collectors.toSet()),
+                book.getGenres().stream()
+                        .map(genreDto -> new GenreDto(
+                                genreDto.getId(),
+                                genreDto.getName()
+                        ))
+                        .collect(Collectors.toSet()),
+                book.getIsbn10(), book.getIsbn13(), book.getPublishingDate(),
+                book.getPublishingHouse(), book.getLanguage(), book.getPageCount(), book.getSummary());
+
+        return bookDTO;
     }
 }

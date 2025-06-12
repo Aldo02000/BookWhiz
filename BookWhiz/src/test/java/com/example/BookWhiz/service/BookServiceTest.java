@@ -61,11 +61,11 @@ public class BookServiceTest {
     @Test
     public void testGetBooksByTitle_shouldReturnBooks() {
         // Arrange
-        Set<Book> books = Set.of(book);
+        List<Book> books = List.of(book);
         when(bookRepository.findByTitleContainingIgnoreCase("Effective")).thenReturn(books);
 
         // Act
-        Set<Book> result = bookService.getBooksByTitle("Effective");
+        List<Book> result = bookService.getBooksByTitle("Effective");
 
         // Assert
         assertNotNull(result);
@@ -101,11 +101,11 @@ public class BookServiceTest {
     public void testGetBooksByGenre_shouldReturnBooks() {
         // Arrange
         Genre genre = new Genre();
-        Set<Book> books = Set.of(book);
+        List<Book> books = List.of(book);
         when(bookRepository.findByGenres(genre)).thenReturn(books);
 
         // Act
-        Set<Book> result = bookService.getBooksByGenre(genre);
+        List<Book> result = bookService.getBooksByGenre(genre);
 
         // Assert
         assertNotNull(result);
@@ -116,11 +116,11 @@ public class BookServiceTest {
     public void testGetBooksByAuthor_shouldReturnBooks() {
         // Arrange
         Author author = new Author();
-        Set<Book> books = Set.of(book);
+        List<Book> books = List.of(book);
         when(bookRepository.findByAuthors(author)).thenReturn(books);
 
         // Act
-        Set<Book> result = bookService.getBooksByAuthor(author);
+        List<Book> result = bookService.getBooksByAuthor(author);
 
         // Assert
         assertNotNull(result);
@@ -194,11 +194,11 @@ public class BookServiceTest {
     @Test
     public void testGetBooksByTitleContaining_shouldReturnBooks() {
         // Arrange
-        Set<Book> books = Set.of(book);
+        List<Book> books = List.of(book);
         when(bookRepository.findByTitleContainingIgnoreCase("Effective")).thenReturn(books);
 
         // Act
-        Set<Book> result = bookService.getBooksByTitleContaining("Effective");
+        List<Book> result = bookService.getBooksByTitleContaining("Effective");
 
         // Assert
         assertNotNull(result);

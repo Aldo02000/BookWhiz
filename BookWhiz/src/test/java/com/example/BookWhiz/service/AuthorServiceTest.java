@@ -51,10 +51,10 @@ class AuthorServiceTest {
 
     @Test
     void getAuthorsByPartOfName_ShouldReturnMatchingAuthors() {
-        Set<Author> authors = new HashSet<>(Collections.singletonList(author));
+        List<Author> authors = Collections.singletonList(author);
         when(authorRepository.findByNameContainingIgnoreCase("Rowling")).thenReturn(authors);
 
-        Set<Author> result = authorService.getAuthorsByPartOfName("Rowling");
+        List<Author> result = authorService.getAuthorsByPartOfName("Rowling");
 
         assertEquals(1, result.size());
         assertTrue(result.contains(author));

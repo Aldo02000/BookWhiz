@@ -61,7 +61,7 @@ class BookCard extends StatelessWidget {
                         child: Text(
                           book.title,
                           style: const TextStyle(
-                            fontSize: 17
+                            fontSize: 15.5
                           ),
                         ),
                       ),
@@ -89,7 +89,7 @@ class BookCard extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.all(1.0),
                                         child: Text(
-                                          style: TextStyle(fontSize: 10.5),
+                                          style: TextStyle(fontSize: 11),
                                           "${author.name},"
                                         ),
                                       ),
